@@ -12,7 +12,7 @@ class CreateNaoConformidades extends AbstractMigration
                 id_entrega INT UNSIGNED NOT NULL,
                 id_motivo  INT UNSIGNED NOT NULL,
                 descricao  VARCHAR(500) NULL,
-                CREATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT id_entrega FOREIGN KEY (id_entrega) REFERENCES entregas (id),
                 CONSTRAINT id_motivo FOREIGN KEY (id_motivo) REFERENCES motivos_nao_conformidade (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
