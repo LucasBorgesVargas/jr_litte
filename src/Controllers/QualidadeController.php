@@ -12,28 +12,11 @@ class QualidadeController
         $where = ['ativo=1'];
         $binds = [];
 
-
-        if (!empty($_GET['id'])) {
-            $where[] = 'e.id = ?';
-            $binds[] = $_GET['id'];
-        }
-
-        if (!empty($_GET['codigo'])) {
-            $where[] = 'e.codigo = ?';
-            $binds[] = $_GET['codigo'];
-        }
-
-        if (!empty($_GET['descricao'])) {
-
-            $binds[] = $_GET['descricao'];
-        }
-
-
         $sql = '
-            SELECT e.id, e.codigo, e.descricao, e.ativo
-            FROM motivos_nao_conformidade e
+            SELECT id, codigo, descricao, ativo
+            FROM motivos_nao_conformidade
             WHERE ' . implode(' AND ', $where) . '
-            ORDER BY e.id DESC
+            ORDER BY id DESC
         ';
 
         $stmt = $db->prepare($sql);
@@ -45,6 +28,50 @@ class QualidadeController
             'codigo'     => $r['codigo'],
             'descricao'     => $r['descricao'],
         ], $rows));
+    }
+
+    public static function store(array $params): void
+    {
+        $data = body();
+        $db   = Database::connection();
+
+        $stmt = $db->prepare('SELECT id FROM entregas WHERE id = ?');
+        $stmt->execute([$params['id']]);
+        if (!$stmt->fetch()) {
+            json(['erro' => 'Entrega não encontrada'], 404);
+        }
+
+        if (empty($data['id_motivo'])) {
+            json(['erro' => 'Campo obrigatório: id_motivo'], 422);
+        }
+
+        $stmt = $db->prepare('SELECT id FROM motivos_nao_conformidade WHERE id = ?');
+        $stmt->execute([$data['id_motivo']]);
+        if (!$stmt->fetch()) {
+            json(['erro' => 'Motivo não encontrado'], 404);
+        }
+
+        $descricao = !empty($data['descricao']) ? $data['descricao'] : null;
+
+        $stmt = $db->prepare('INSERT INTO nao_conformidades (id_entrega, id_motivo, descricao) VALUES (?, ?, ?)');
+        $stmt->execute([$params['id'], $data['id_motivo'], $descricao]);
+
+
+        $id = $db->lastInsertId();
+
+        $stmt = $db->prepare('SELECT * FROM nao_conformidades WHERE id = ?');
+        $stmt->execute([$id]);
+        $nc = $stmt->fetch();
+
+        json([
+            'id'         => (int) $nc['id'],
+            'id_entrega' => (int) $nc['id_entrega'],
+            'id_motivo'  => (int) $nc['id_motivo'],
+            'descricao'  => $nc['descricao'],
+            'created_at' => $nc['created_at'],
+        ], 201);
+
+
     }
 
 
