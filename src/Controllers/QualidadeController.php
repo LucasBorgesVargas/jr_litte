@@ -9,6 +9,8 @@ class QualidadeController
     public static function index(array $params): void
     {
         $db    = Database::connection();
+
+
         $where = ['ativo=1'];
         $binds = [];
 
@@ -27,6 +29,28 @@ class QualidadeController
             'id'         => (int) $r['id'],
             'codigo'     => $r['codigo'],
             'descricao'     => $r['descricao'],
+        ], $rows));
+    }
+
+    public static function listarNaoConformidades(array $params): void
+    {
+        $db    = Database::connection();
+        $binds = [$params['id']];
+
+        $sql = '
+            SELECT id, id_entrega, id_motivo, descricao, created_at  FROM nao_conformidades WHERE id_entrega = ?
+        ';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($binds);
+        $rows = $stmt->fetchAll();
+
+        json(array_map(fn($r) => [
+            'id'         => (int) $r['id'],
+            'id_entrega' => (int) $r['id_entrega'],
+            'id_motivo'  => (int) $r['id_motivo'],
+            'descricao'  => $r['descricao'],
+            'created_at' => $r['created_at'],
         ], $rows));
     }
 
