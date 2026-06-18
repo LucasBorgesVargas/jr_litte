@@ -9,7 +9,7 @@ class QualidadeController
     public static function index(array $params): void
     {
         $db    = Database::connection();
-        $where = ['1=1'];
+        $where = ['ativo=1'];
         $binds = [];
 
 
@@ -28,10 +28,6 @@ class QualidadeController
             $binds[] = $_GET['descricao'];
         }
 
-        if (!empty($_GET['ativo'])) {
-
-            $binds[] = $_GET['ativo'];
-        }
 
         $sql = '
             SELECT e.id, e.codigo, e.descricao, e.ativo
@@ -48,7 +44,6 @@ class QualidadeController
             'id'         => (int) $r['id'],
             'codigo'     => $r['codigo'],
             'descricao'     => $r['descricao'],
-            'ativo' => $r['ativo'],
         ], $rows));
     }
 
