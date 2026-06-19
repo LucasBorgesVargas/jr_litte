@@ -140,5 +140,9 @@ Dados de seed disponíveis (use os IDs para testar):
 
 ## Decisões técnicas
 
-- QualidadeController foi criado separado pois sua responsabilidade é diferente dos demais controllers — gerencia motivos e registros de não conformidade, não entregas ou transportadoras
-- descricao em não conformidades é opcional — quando não enviado, é armazenado como null no banco
+- QualidadeController foi criado separado pois sua responsabilidade é diferente dos demais controllers.
+Gerencia motivos e registros de não conformidade, não entregas ou transportadoras
+- descricao em não conformidades é opcional. Quando não enviado, é armazenado 
+como null no banco
+- A validação de transportadora inativa foi feita verificando deleted_at 
+IS NULL, pois o sistema utiliza soft delete sem campo de status explícito. Essa inferência foi feita a partir da análise da estrutura da tabela
