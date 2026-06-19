@@ -35,7 +35,7 @@ $router->get('/entregas',               [EntregaController::class, 'index']);
 $router->post('/entregas',              [EntregaController::class, 'store']);
 $router->get('/entregas/{id}',          [EntregaController::class, 'show']);
 $router->patch('/entregas/{id}/status', [EntregaController::class, 'updateStatus']);
-$router->get('/rastreamento/{codigo}', [EntregaController::class, 'show']);
+$router->get('/rastreamento/{id}', [EntregaController::class, 'show']);
 
 // Motivos não conformidades
 $router->get('/motivos-nao-conformidade',                 [QualidadeController::class, 'index']);
